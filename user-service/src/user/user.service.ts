@@ -7,27 +7,13 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {
-    //
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
+  findOne(email: string) {
+    return this.userModel.findOne({ email }).exec();
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
-  async findAll() {
-    return this.userModel.find().exec();
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  findById(id: string) {
+    return this.userModel.findById(id).exec();
   }
 }

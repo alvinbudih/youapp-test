@@ -5,22 +5,28 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Res,
+  Req,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
+import { CreateProfileDto, FormProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Response } from 'express';
 import NotFoundError from 'src/helpers/errors/NotFoundError';
+import { AuthRequest } from 'src/auth/auth.interface';
+import { UserService } from 'src/user/user.service';
 
 @Controller('api')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post('createProfile')
   async create(
-    @Body() createProfileDto: CreateProfileDto,
+    @Body() createProfileDto: FormProfileDto,
+    @Req() req: AuthRequest,
     @Res() res: Response,
   ) {
     try {
@@ -32,8 +38,11 @@ export class ProfileController {
         zodiac,
         height,
         weight,
-        userId,
       } = createProfileDto;
+
+      const {
+        user: { id: userId },
+      } = req;
 
       await this.profileService.create({
         displayName,
@@ -52,21 +61,22 @@ export class ProfileController {
     }
   }
 
-  @Get('getProfile/:userId')
-  async findOne(@Param('userId') userId: string, @Res() res: Response) {
+  @Get('getProfile')
+  async findOne(@Req() req: AuthRequest, @Res() res: Response) {
     try {
-      const profile = await this.profileService.findOne(userId);
+      const user = await this.userService.findById(req.user.id);
+      const profile = await this.profileService.findOne(user.id);
 
-      res.json(profile);
+      res.json({ profile, user });
     } catch (error) {
       res.status(400).json({ msg: error.message });
     }
   }
 
-  @Patch('updateProfile/:id')
+  @Patch('updateProfile')
   async update(
-    @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
+    @Req() req: AuthRequest,
     @Res() res: Response,
   ) {
     try {
@@ -78,8 +88,11 @@ export class ProfileController {
         zodiac,
         height,
         weight,
-        userId,
       } = updateProfileDto;
+
+      const {
+        user: { id },
+      } = req;
 
       const updatedProfile = await this.profileService.update(id, {
         displayName,
@@ -89,7 +102,6 @@ export class ProfileController {
         zodiac,
         height,
         weight,
-        userId,
       });
 
       if (!updatedProfile) throw new NotFoundError(id, 'Profile');

@@ -19,7 +19,9 @@ export class ProfileService {
     return this.profileModel.findOne({ userId }).exec();
   }
 
-  update(id: string, updateProfileDto: UpdateProfileDto) {
-    return this.profileModel.findByIdAndUpdate(id, updateProfileDto).exec();
+  update(userId: string, updateProfileDto: UpdateProfileDto) {
+    return this.profileModel
+      .findOneAndUpdate({ userId }, updateProfileDto)
+      .exec();
   }
 }

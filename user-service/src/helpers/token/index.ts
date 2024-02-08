@@ -10,6 +10,6 @@ export function signToken(payload: Payload) {
   return sign(payload, secretKey);
 }
 
-export function decodeToken(token: string) {
-  return verify(token, secretKey);
+export function decodeToken(token: string): Payload {
+  return verify(token, secretKey) as Payload;
 }
