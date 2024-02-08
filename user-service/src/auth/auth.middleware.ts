@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { UnauthenticatedError } from 'src/helpers/errors/UnauthenticatedError';
 import { decodeToken } from 'src/helpers/token';
@@ -7,6 +11,7 @@ import { User } from 'src/schemas/user.schema';
 import { Model } from 'mongoose';
 import { AuthRequest } from './auth.interface';
 import { UserService } from 'src/user/user.service';
+import { JsonWebTokenError } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -32,7 +37,15 @@ export class AuthMiddleware implements NestMiddleware {
 
       next();
     } catch (error) {
-      res.status(401).json({ msg: error.message });
+      console.log(error);
+
+      if (error instanceof UnauthenticatedError) {
+        next(new UnauthorizedException(error.message));
+      } else if (error instanceof JsonWebTokenError) {
+        next(new UnauthorizedException('Invalid Token'));
+      } else {
+        next(error);
+      }
     }
   }
 }

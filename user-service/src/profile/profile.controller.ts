@@ -7,14 +7,18 @@ import {
   Param,
   Res,
   Req,
+  Next,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto, FormProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import NotFoundError from 'src/helpers/errors/NotFoundError';
 import { AuthRequest } from 'src/auth/auth.interface';
 import { UserService } from 'src/user/user.service';
+import { Error as MongooseError } from 'mongoose';
 
 @Controller('api')
 export class ProfileController {
@@ -28,7 +32,10 @@ export class ProfileController {
     @Body() createProfileDto: FormProfileDto,
     @Req() req: AuthRequest,
     @Res() res: Response,
+    @Next() next: NextFunction,
   ) {
+    console.log('create profile api...');
+
     try {
       const {
         displayName,
@@ -44,7 +51,7 @@ export class ProfileController {
         user: { id: userId },
       } = req;
 
-      await this.profileService.create({
+      const profile = await this.profileService.create({
         displayName,
         gender,
         birthday,
@@ -55,21 +62,36 @@ export class ProfileController {
         userId,
       });
 
-      res.status(201).json({ msg: 'Profile Created Successfully' });
+      res
+        .status(201)
+        .json({ msg: 'Profile Created Successfully', data: profile });
     } catch (error) {
-      res.status(400).json({ msg: error.message, errors: error.errors });
+      if (
+        error instanceof MongooseError.ValidationError ||
+        error.name === 'MongoServerError'
+      ) {
+        next(new BadRequestException(error.message));
+      } else {
+        next(error);
+      }
     }
   }
 
   @Get('getProfile')
-  async findOne(@Req() req: AuthRequest, @Res() res: Response) {
+  async findOne(
+    @Req() req: AuthRequest,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    console.log('get profile api...');
+
     try {
       const user = await this.userService.findById(req.user.id);
       const profile = await this.profileService.findOne(user.id);
 
       res.json({ profile, user });
     } catch (error) {
-      res.status(400).json({ msg: error.message });
+      next(error);
     }
   }
 
@@ -78,7 +100,10 @@ export class ProfileController {
     @Body() updateProfileDto: UpdateProfileDto,
     @Req() req: AuthRequest,
     @Res() res: Response,
+    @Next() next: NextFunction,
   ) {
+    console.log('update profile api...');
+
     try {
       const {
         displayName,
@@ -106,9 +131,18 @@ export class ProfileController {
 
       if (!updatedProfile) throw new NotFoundError(id, 'Profile');
 
-      res.json({ msg: 'Profile Updated Successfully', updatedProfile });
+      res.json({ msg: 'Profile Updated Successfully', data: updatedProfile });
     } catch (error) {
-      res.status(400).json({ msg: error.message });
+      if (
+        error instanceof MongooseError.ValidationError ||
+        error.name === 'MongoServerError'
+      ) {
+        next(new BadRequestException(error.message));
+      } else if (error instanceof NotFoundError) {
+        next(new NotFoundException(error.message));
+      } else {
+        next(error);
+      }
     }
   }
 }

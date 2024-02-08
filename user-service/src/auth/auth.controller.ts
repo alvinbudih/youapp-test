@@ -1,16 +1,31 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Next,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Register } from './dto/register.dto';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { Payload } from './dto/payload.dto';
 import { EmailPasswordRequiredError } from 'src/helpers/errors/EmailPasswordRequiredError';
+import { Error as MongooseError } from 'mongoose';
+import { InvalidPayloadError } from 'src/helpers/errors/InvalidPayloadError';
 
 @Controller('api')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() register: Register, @Res() res: Response) {
+  async register(
+    @Body() register: Register,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    console.log('api register...');
+
     try {
       const { username, email, password, confirmPassword } = register;
 
@@ -23,12 +38,25 @@ export class AuthController {
 
       res.json(user);
     } catch (error) {
-      res.status(400).json({ msg: error.message });
+      if (
+        error instanceof MongooseError.ValidationError ||
+        error.name === 'MongoServerError'
+      ) {
+        next(new BadRequestException(error.message));
+      } else {
+        next(error);
+      }
     }
   }
 
   @Post('login')
-  async login(@Body() payload: Payload, @Res() res: Response) {
+  async login(
+    @Body() payload: Payload,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    console.log('api login...');
+
     try {
       const { email, password } = payload;
 
@@ -40,7 +68,14 @@ export class AuthController {
 
       res.json({ access_token });
     } catch (error) {
-      res.status(400).json({ msg: error.message });
+      if (
+        error instanceof EmailPasswordRequiredError ||
+        error instanceof InvalidPayloadError
+      ) {
+        next(new BadRequestException(error.message));
+      } else {
+        next(error);
+      }
     }
   }
 }

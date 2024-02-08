@@ -24,7 +24,7 @@ export class Profile {
   @Prop({ required: true })
   weight: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   userId: string;
 }
 
