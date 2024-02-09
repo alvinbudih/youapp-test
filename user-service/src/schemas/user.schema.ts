@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { hash } from 'src/helpers/hash';
+import { hash } from '../helpers/hash';
 import isEmail from 'validator/lib/isEmail';
 
 @Schema()

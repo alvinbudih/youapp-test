@@ -98,7 +98,6 @@ export class ProfileController {
     @Next() next: NextFunction,
   ) {
     console.log('get profile api...');
-    console.log(req.hostname);
 
     try {
       const user = await this.userService.findById(req.user.id);

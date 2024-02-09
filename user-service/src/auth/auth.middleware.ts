@@ -3,14 +3,11 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
-import { UnauthenticatedError } from 'src/helpers/errors/UnauthenticatedError';
-import { decodeToken } from 'src/helpers/token';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/schemas/user.schema';
-import { Model } from 'mongoose';
+import { NextFunction, Response } from 'express';
+import { UnauthenticatedError } from '../helpers/errors/UnauthenticatedError';
+import { decodeToken } from '../helpers/token';
 import { AuthRequest } from './auth.interface';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import { JsonWebTokenError } from '@nestjs/jwt';
 
 @Injectable()
