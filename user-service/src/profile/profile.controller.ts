@@ -33,12 +33,13 @@ export class ProfileController {
   ) {}
 
   @Post('createProfile')
-  @UseInterceptors(FileInterceptor('profilePicture'))
+  @UseInterceptors(FileInterceptor('profilePicture', { limits: { files: 1 } }))
   async create(
     @Body() body: FormProfileDto,
     @UploadedFile(
       new ParseFilePipe({
         validators: [new FileTypeValidator({ fileType: /jpg|jpeg|png/ })],
+        fileIsRequired: false,
       }),
     )
     profilePicture: Express.Multer.File,
@@ -116,6 +117,7 @@ export class ProfileController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [new FileTypeValidator({ fileType: /jpg|jpeg|png/ })],
+        fileIsRequired: false,
       }),
     )
     profilePicture: Express.Multer.File,
@@ -150,14 +152,16 @@ export class ProfileController {
         zodiac,
         height,
         weight,
-        profilePicture,
+        ...(profilePicture && { profilePicture }),
         interests,
       });
 
-      if (!updatedProfile) throw new NotFoundError(id, 'Profile');
+      if (!updatedProfile.modifiedCount) throw new NotFoundError(id, 'Profile');
 
-      res.json({ msg: 'Profile Updated Successfully', data: updatedProfile });
+      res.json({ msg: 'Profile Updated Successfully' });
     } catch (error) {
+      console.log(error);
+
       if (
         error instanceof MongooseError.ValidationError ||
         error.name === 'MongoServerError'

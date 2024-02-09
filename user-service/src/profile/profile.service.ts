@@ -14,9 +14,7 @@ export class ProfileService {
   create(createProfileDto: CreateProfileDto) {
     return new this.profileModel({
       ...createProfileDto,
-      ...(createProfileDto.profilePicture.path && {
-        profilePicture: createProfileDto.profilePicture.path,
-      }),
+      profilePicture: createProfileDto?.profilePicture?.path,
     }).save();
   }
 
@@ -25,16 +23,6 @@ export class ProfileService {
   }
 
   update(userId: string, updateProfileDto: UpdateProfileDto) {
-    return this.profileModel
-      .findOneAndUpdate(
-        { userId },
-        {
-          ...updateProfileDto,
-          ...(updateProfileDto.profilePicture.path && {
-            profilePicture: updateProfileDto.profilePicture.path,
-          }),
-        },
-      )
-      .exec();
+    return this.profileModel.updateOne({ userId }, updateProfileDto).exec();
   }
 }
