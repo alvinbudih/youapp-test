@@ -10,4 +10,5 @@ export class FormProfileDto {
 
 export class CreateProfileDto extends FormProfileDto {
   userId: string;
+  profilePicture?: Express.Multer.File;
 }

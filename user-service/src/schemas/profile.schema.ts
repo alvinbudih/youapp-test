@@ -26,6 +26,12 @@ export class Profile {
 
   @Prop({ required: true, unique: true })
   userId: string;
+
+  @Prop()
+  profilePicture: string;
+
+  @Prop()
+  interests: Array<string>;
 }
 
 export type ProfileDocument = HydratedDocument<Profile>;
