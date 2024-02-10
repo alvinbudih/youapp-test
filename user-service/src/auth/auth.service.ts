@@ -14,7 +14,6 @@ export class AuthService {
 
   register({ username, email, password, confirmPassword }: Register) {
     let isConfirmPassword: boolean = password === confirmPassword;
-    console.log(isConfirmPassword);
 
     if (!isConfirmPassword) throw new InvalidPayloadError();
 
@@ -24,7 +23,6 @@ export class AuthService {
 
   async login(payload: Payload) {
     const user = await this.userModel.findOne({ email: payload.email }).exec();
-    console.log(user);
 
     if (!user || !compare(payload.password, user.password)) {
       throw new InvalidPayloadError();

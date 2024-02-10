@@ -23,7 +23,6 @@ import { AuthRequest } from '../auth/auth.interface';
 import { UserService } from '../user/user.service';
 import { Error as MongooseError } from 'mongoose';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
 import findZodiacSign from 'src/helpers/findZodiacSign';
 
 @Controller('api')

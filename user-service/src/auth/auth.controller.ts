@@ -36,7 +36,7 @@ export class AuthController {
         confirmPassword,
       });
 
-      res.json(user);
+      return res.json(user);
     } catch (error) {
       if (
         error instanceof MongooseError.ValidationError ||
