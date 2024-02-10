@@ -10,9 +10,9 @@ import { AuthService } from './auth.service';
 import { Register } from './dto/register.dto';
 import { NextFunction, Response } from 'express';
 import { Payload } from './dto/payload.dto';
-import { EmailPasswordRequiredError } from 'src/helpers/errors/EmailPasswordRequiredError';
+import { EmailPasswordRequiredError } from '../helpers/errors/EmailPasswordRequiredError';
 import { Error as MongooseError } from 'mongoose';
-import { InvalidPayloadError } from 'src/helpers/errors/InvalidPayloadError';
+import { InvalidPayloadError } from '../helpers/errors/InvalidPayloadError';
 
 @Controller('api')
 export class AuthController {

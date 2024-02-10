@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { ProfileController } from './profile.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Profile, ProfileSchema } from 'src/schemas/profile.schema';
-import { AuthMiddleware } from 'src/auth/auth.middleware';
-import { UserService } from 'src/user/user.service';
-import { User, UserSchema } from 'src/schemas/user.schema';
+import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { Profile, ProfileSchema } from '../schemas/profile.schema';
+import { AuthMiddleware } from '../auth/auth.middleware';
+import { UserService } from '../user/user.service';
+import { User, UserSchema } from '../schemas/user.schema';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/schemas/user.schema';
+import { User } from '../schemas/user.schema';
 import { Register } from './dto/register.dto';
 import { Payload } from './dto/payload.dto';
-import { compare } from 'src/helpers/hash';
-import { signToken } from 'src/helpers/token';
-import { InvalidPayloadError } from 'src/helpers/errors/InvalidPayloadError';
+import { compare } from '../helpers/hash';
+import { signToken } from '../helpers/token';
+import { InvalidPayloadError } from '../helpers/errors/InvalidPayloadError';
 
 @Injectable()
 export class AuthService {

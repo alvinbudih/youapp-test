@@ -18,12 +18,13 @@ import { ProfileService } from './profile.service';
 import { FormProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { NextFunction, Response } from 'express';
-import NotFoundError from 'src/helpers/errors/NotFoundError';
-import { AuthRequest } from 'src/auth/auth.interface';
-import { UserService } from 'src/user/user.service';
+import NotFoundError from '../helpers/errors/NotFoundError';
+import { AuthRequest } from '../auth/auth.interface';
+import { UserService } from '../user/user.service';
 import { Error as MongooseError } from 'mongoose';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
+import findZodiacSign from 'src/helpers/findZodiacSign';
 
 @Controller('api')
 export class ProfileController {
@@ -50,19 +51,16 @@ export class ProfileController {
     console.log('create profile api...');
 
     try {
-      const {
-        displayName,
-        gender,
-        birthday,
-        horoscope,
-        zodiac,
-        height,
-        weight,
-      } = body;
+      const { displayName, gender, birthday, height, weight } = body;
 
       const {
         user: { id: userId },
       } = req;
+
+      const { horoscope, zodiac } = findZodiacSign(
+        new Date(birthday).getDate(),
+        new Date(birthday).getMonth(),
+      );
 
       const profile = await this.profileService.create({
         displayName,
@@ -128,20 +126,17 @@ export class ProfileController {
     console.log('update profile api...');
 
     try {
-      const {
-        displayName,
-        gender,
-        birthday,
-        horoscope,
-        zodiac,
-        height,
-        weight,
-        interests,
-      } = updateProfileDto;
+      const { displayName, gender, birthday, height, weight, interests } =
+        updateProfileDto;
 
       const {
         user: { id },
       } = req;
+
+      const { horoscope, zodiac } = findZodiacSign(
+        new Date(birthday).getDate(),
+        new Date(birthday).getMonth(),
+      );
 
       const updatedProfile = await this.profileService.update(id, {
         displayName,
