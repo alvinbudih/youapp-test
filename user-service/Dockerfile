@@ -1,19 +1,17 @@
 FROM node:18.17
 
-WORKDIR /usr/local/app
+WORKDIR /user-service
 
 ENV PORT=3000
 
-COPY package.json package-lock.json /usr/local/app/
+ENV JWT_TOKEN=secret
 
-COPY .env.example .env
+ENV DB_CONNECTION=mongodb+srv://evandraavin21:0AOI9cfKf2676jdV@cluster0.p0pwbkh.mongodb.net/youapp?retryWrites=true&w=majority
 
-RUN npm install -g typescript
+COPY package.json package-lock.json /user-service/
 
 RUN npm install && npm cache clean --force
 
-RUN npm install -g @nestjs/cli
-
 COPY ./ ./
 
-CMD ["nest", "start"]
+CMD ["npm", "run", "start"]
