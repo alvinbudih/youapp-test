@@ -1,0 +1,11 @@
+version: "3.6"
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./user-service/app:/usr/local/app
+    env_file:
+      - ./user-service/.env
