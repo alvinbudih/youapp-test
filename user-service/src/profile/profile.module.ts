@@ -11,8 +11,10 @@ import { diskStorage } from 'multer';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Profile.name, schema: ProfileSchema }]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: Profile.name, schema: ProfileSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
     MulterModule.register({
       storage: diskStorage({
         destination: './public/profile-pictures',
