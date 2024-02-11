@@ -45,7 +45,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  disconnect();
+  await disconnect();
 });
 
 describe('AuthService', () => {

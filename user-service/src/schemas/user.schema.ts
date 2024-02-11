@@ -12,7 +12,7 @@ export class User {
     required: true,
     unique: true,
     validate: {
-      validator: function (v) {
+      validator: function (v: string) {
         return isEmail(v);
       },
       message: (prop) => `${prop.value} is not a valid email`,

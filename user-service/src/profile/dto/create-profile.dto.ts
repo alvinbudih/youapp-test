@@ -8,7 +8,5 @@ export class FormProfileDto {
 
 export class CreateProfileDto extends FormProfileDto {
   userId: string;
-  horoscope: string;
-  zodiac: string;
   profilePicture?: Express.Multer.File;
 }

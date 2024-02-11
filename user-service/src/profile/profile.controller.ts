@@ -56,17 +56,10 @@ export class ProfileController {
         user: { id: userId },
       } = req;
 
-      const { horoscope, zodiac } = findZodiacSign(
-        new Date(birthday).getDate(),
-        new Date(birthday).getMonth(),
-      );
-
       const profile = await this.profileService.create({
         displayName,
         gender,
         birthday,
-        horoscope,
-        zodiac,
         height,
         weight,
         userId,
@@ -132,17 +125,10 @@ export class ProfileController {
         user: { id },
       } = req;
 
-      const { horoscope, zodiac } = findZodiacSign(
-        new Date(birthday).getDate(),
-        new Date(birthday).getMonth(),
-      );
-
       const updatedProfile = await this.profileService.update(id, {
         displayName,
         gender,
         birthday,
-        horoscope,
-        zodiac,
         height,
         weight,
         ...(profilePicture && { profilePicture }),
