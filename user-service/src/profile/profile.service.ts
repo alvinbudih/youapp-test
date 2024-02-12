@@ -52,7 +52,7 @@ export class ProfileService {
     const payload = cleanEmptyValue(updateProfileDto);
 
     return this.profileModel
-      .updateOne(
+      .findOneAndUpdate(
         { userId },
         {
           ...payload,

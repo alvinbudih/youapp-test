@@ -26,6 +26,8 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^10.0.4",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-socket.io": "^10.3.2",
+    "@nestjs/websockets": "^10.3.2",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.1",
     "jest-mock": "^29.7.0",

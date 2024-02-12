@@ -135,7 +135,7 @@ export class ProfileController {
         interests,
       });
 
-      if (!updatedProfile.modifiedCount) throw new NotFoundError(id, 'Profile');
+      if (!updatedProfile) throw new NotFoundError(id, 'Profile');
 
       res.json({ msg: 'Profile Updated Successfully' });
     } catch (error) {
